@@ -8,3 +8,39 @@ Admin User:
 
 Username: Admin
 Password: admin123
+
+
+Users can log in, view books, borrow, and return books.
+All data is stored in text files so it stays even after the program closes.
+
+Files Used
+
+users.txt – Stores user info (ID, Name, Password, Role)
+
+books.txt – Stores book details (ID, Title, Author, Availability)
+
+transactions.txt – Records borrowed and returned books
+
+Classes
+
+Person – Base class (id, name)
+
+User – Inherits from Person (password, role, borrowed books)
+
+Book – Holds book information
+
+Transaction – Records book borrow/return data
+
+LibrarySystem – Main controller for login, menu, and file handling
+
+🧠 Features
+
+Login system (with 3 attempts)
+
+Borrow and return books
+
+View all books
+
+Admin users can manage users, books, and transactions
+
+Data saved automatically in text files
