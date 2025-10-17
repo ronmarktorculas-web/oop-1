@@ -1,5 +1,23 @@
+import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-public class Person {
+// ------------------- MAIN (MUST BE FIRST!) -------------------
+public class LibraryManagementSystem {
+    public static void main(String[] args) {
+        LibrarySystem lib = new LibrarySystem();
+        if (lib.login()) {
+            lib.showMenu();
+        } else {
+            System.out.println("Login failed. Exiting system...");
+        }
+    }
+}
+
+// ------------------- Person.java -------------------
+class Person {
     protected String id;
     protected String name;
 
@@ -18,10 +36,8 @@ public class Person {
     public void setName(String name) { this.name = name; }
 }
 
-
-import java.util.ArrayList;
-
-public class User extends Person {
+// ------------------- User.java -------------------
+class User extends Person {
     private String password;
     private String role;
     private ArrayList<String> borrowedBooks;
@@ -45,24 +61,14 @@ public class User extends Person {
     public String getPassword() { return password; }
     public String getRole() { return role; }
     public boolean isAdmin() { return role.equalsIgnoreCase("admin"); }
-
     public ArrayList<String> getBorrowedBooks() { return borrowedBooks; }
-
-    public boolean canBorrowMore() {
-        return borrowedBooks.size() < 3;
-    }
-
-    public void addBorrowedBook(String bookId) {
-        borrowedBooks.add(bookId);
-    }
-
-    public void removeBorrowedBook(String bookId) {
-        borrowedBooks.remove(bookId);
-    }
+    public boolean canBorrowMore() { return borrowedBooks.size() < 3; }
+    public void addBorrowedBook(String bookId) { borrowedBooks.add(bookId); }
+    public void removeBorrowedBook(String bookId) { borrowedBooks.remove(bookId); }
 }
 
-// Book.java
-public class Book {
+// ------------------- Book.java -------------------
+class Book {
     private String bookId;
     private String title;
     private String author;
@@ -84,12 +90,11 @@ public class Book {
     public String getTitle() { return title; }
     public String getAuthor() { return author; }
     public boolean isAvailable() { return available; }
-
     public void setAvailable(boolean available) { this.available = available; }
 }
 
-// Transaction.java
-public class Transaction {
+// ------------------- Transaction.java -------------------
+class Transaction {
     private String transactionId;
     private String userId;
     private String bookId;
@@ -116,19 +121,11 @@ public class Transaction {
     public String getBookId() { return bookId; }
     public String getDateBorrowed() { return dateBorrowed; }
     public String getDateReturned() { return dateReturned; }
-
-    public void setDateReturned(String dateReturned) {
-        this.dateReturned = dateReturned;
-    }
+    public void setDateReturned(String dateReturned) { this.dateReturned = dateReturned; }
 }
 
-// LibrarySystem.java
-import java.io.*;
-import java.util.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-public class LibrarySystem {
+// ------------------- LibrarySystem.java -------------------
+class LibrarySystem {
     private ArrayList<User> users;
     private ArrayList<Book> books;
     private ArrayList<Transaction> transactions;
@@ -151,8 +148,11 @@ public class LibrarySystem {
         books.add(new Book("B003", "To Kill a Mockingbird", "Harper Lee", false));
     }
 
-    // --- LOGIN ---
     public boolean login() {
+        System.out.println("\n========================================");
+        System.out.println("  LIBRARY MANAGEMENT SYSTEM - LOGIN");
+        System.out.println("========================================");
+        
         int attempts = 3;
         while (attempts > 0) {
             System.out.print("\nUsername: ");
@@ -163,78 +163,123 @@ public class LibrarySystem {
             for (User u : users) {
                 if (u.getName().equalsIgnoreCase(username) && u.getPassword().equals(password)) {
                     loggedInUser = u;
-                    System.out.println("Welcome, " + u.getName() + "!");
+                    System.out.println("\n✓ Login successful! Welcome, " + u.getName() + "!");
                     return true;
                 }
             }
-
             attempts--;
-            System.out.println("Invalid credentials. Attempts left: " + attempts);
+            System.out.println("✗ Invalid credentials. Attempts left: " + attempts);
         }
         return false;
     }
 
-    // --- MENU ---
     public void showMenu() {
         while (true) {
-            System.out.println("\n1. View All Books");
+            System.out.println("\n========================================");
+            System.out.println("         LIBRARY MAIN MENU");
+            System.out.println("========================================");
+            System.out.println("1. View All Books");
             System.out.println("2. Borrow Book");
             System.out.println("3. Return Book");
             if (loggedInUser.isAdmin()) {
-                System.out.println("4. View Transactions");
+                System.out.println("4. View Transactions (Admin)");
             }
             System.out.println("0. Exit");
+            System.out.println("========================================");
             System.out.print("Choice: ");
 
             String choice = sc.nextLine();
             switch (choice) {
-                case "1": viewAllBooks(); break;
-                case "2": borrowBook(); break;
-                case "3": returnBook(); break;
-                case "4": if (loggedInUser.isAdmin()) viewAllTransactions(); break;
-                case "0": System.out.println("Goodbye!"); return;
-                default: System.out.println("Invalid choice.");
+                case "1": 
+                    viewAllBooks(); 
+                    break;
+                case "2": 
+                    borrowBook(); 
+                    break;
+                case "3": 
+                    returnBook(); 
+                    break;
+                case "4": 
+                    if (loggedInUser.isAdmin()) {
+                        viewAllTransactions();
+                    } else {
+                        System.out.println("✗ Access denied. Admin only.");
+                    }
+                    break;
+                case "0": 
+                    System.out.println("\n✓ Thank you for using Library System. Goodbye!"); 
+                    return;
+                default: 
+                    System.out.println("✗ Invalid choice. Please try again.");
             }
         }
     }
 
     private void viewAllBooks() {
-        System.out.println("\n--- BOOK LIST ---");
+        System.out.println("\n========================================");
+        System.out.println("           BOOK CATALOGUE");
+        System.out.println("========================================");
         System.out.printf("%-8s %-30s %-20s %-10s%n", "ID", "Title", "Author", "Status");
-        for (Book b : books) b.displayBookDetails();
+        System.out.println("------------------------------------------------------------------------");
+        for (Book b : books) {
+            b.displayBookDetails();
+        }
     }
 
     private void borrowBook() {
-        System.out.print("Enter Book ID to borrow: ");
+        System.out.println("\n--- BORROW BOOK ---");
+        viewAllBooks();
+        System.out.print("\nEnter Book ID to borrow: ");
         String bookId = sc.nextLine();
 
         for (Book b : books) {
             if (b.getBookId().equalsIgnoreCase(bookId)) {
                 if (!b.isAvailable()) {
-                    System.out.println("Sorry, book is already borrowed.");
+                    System.out.println("✗ Sorry, book is already borrowed.");
                     return;
                 }
                 if (!loggedInUser.canBorrowMore()) {
-                    System.out.println("You already borrowed 3 books.");
+                    System.out.println("✗ You already borrowed 3 books (maximum limit).");
                     return;
                 }
                 b.setAvailable(false);
                 loggedInUser.addBorrowedBook(bookId);
-                transactions.add(new Transaction("T00" + (transactions.size() + 1),
-                        loggedInUser.getId(), bookId, getToday(), "null"));
-                System.out.println("Book borrowed successfully!");
+                
+                String transId = "T00" + (transactions.size() + 1);
+                transactions.add(new Transaction(transId, loggedInUser.getId(), 
+                                                bookId, getToday(), "null"));
+                
+                System.out.println("✓ Book borrowed successfully!");
+                System.out.println("  Transaction ID: " + transId);
+                System.out.println("  Please return by: " + getFutureDate(14));
                 return;
             }
         }
-        System.out.println("Book not found.");
+        System.out.println("✗ Book not found.");
     }
 
     private void returnBook() {
-        System.out.print("Enter Book ID to return: ");
+        System.out.println("\n--- RETURN BOOK ---");
+        
+        if (loggedInUser.getBorrowedBooks().isEmpty()) {
+            System.out.println("✗ You have no books to return.");
+            return;
+        }
+        
+        System.out.println("Your borrowed books:");
+        for (String bookId : loggedInUser.getBorrowedBooks()) {
+            for (Book b : books) {
+                if (b.getBookId().equals(bookId)) {
+                    b.displayBookDetails();
+                }
+            }
+        }
+        
+        System.out.print("\nEnter Book ID to return: ");
         String bookId = sc.nextLine();
 
         if (!loggedInUser.getBorrowedBooks().contains(bookId)) {
-            System.out.println("You didn't borrow this book.");
+            System.out.println("✗ You didn't borrow this book.");
             return;
         }
 
@@ -244,36 +289,41 @@ public class LibrarySystem {
                 loggedInUser.removeBorrowedBook(bookId);
 
                 for (Transaction t : transactions) {
-                    if (t.getBookId().equals(bookId) && t.getUserId().equals(loggedInUser.getId()) && t.getDateReturned().equals("null")) {
+                    if (t.getBookId().equals(bookId) && 
+                        t.getUserId().equals(loggedInUser.getId()) && 
+                        t.getDateReturned().equals("null")) {
                         t.setDateReturned(getToday());
                     }
                 }
 
-                System.out.println("Book returned successfully!");
+                System.out.println("✓ Book returned successfully! Thank you.");
                 return;
             }
         }
     }
 
     private void viewAllTransactions() {
-        System.out.println("\n--- TRANSACTIONS ---");
+        System.out.println("\n========================================");
+        System.out.println("        ALL TRANSACTIONS (ADMIN)");
+        System.out.println("========================================");
+        
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+        
         System.out.printf("%-8s %-8s %-8s %-15s %-15s%n", "T_ID", "User", "Book", "Borrowed", "Returned");
-        for (Transaction t : transactions) t.displayTransaction();
+        System.out.println("------------------------------------------------------------------------");
+        for (Transaction t : transactions) {
+            t.displayTransaction();
+        }
     }
 
     private String getToday() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
-}
-
-// LibraryManagementSystem.java
-public class LibraryManagementSystem {
-    public static void main(String[] args) {
-        LibrarySystem lib = new LibrarySystem();
-        if (lib.login()) {
-            lib.showMenu();
-        } else {
-            System.out.println("Login failed. Exiting system...");
-        }
+    
+    private String getFutureDate(int days) {
+        return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }
