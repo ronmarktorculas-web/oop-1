@@ -4,7 +4,7 @@ import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-// ------------------- MAIN (MUST BE FIRST!) -------------------
+// MAIN
 public class LibraryManagementSystem {
     public static void main(String[] args) {
         LibrarySystem lib = new LibrarySystem();
@@ -16,7 +16,7 @@ public class LibraryManagementSystem {
     }
 }
 
-// ------------------- Person.java -------------------
+// Person
 class Person {
     protected String id;
     protected String name;
@@ -36,7 +36,7 @@ class Person {
     public void setName(String name) { this.name = name; }
 }
 
-// ------------------- User.java -------------------
+// User
 class User extends Person {
     private String password;
     private String role;
@@ -67,7 +67,7 @@ class User extends Person {
     public void removeBorrowedBook(String bookId) { borrowedBooks.remove(bookId); }
 }
 
-// ------------------- Book.java -------------------
+// Book
 class Book {
     private String bookId;
     private String title;
@@ -93,7 +93,7 @@ class Book {
     public void setAvailable(boolean available) { this.available = available; }
 }
 
-// ------------------- Transaction.java -------------------
+// Transaction
 class Transaction {
     private String transactionId;
     private String userId;
@@ -124,7 +124,7 @@ class Transaction {
     public void setDateReturned(String dateReturned) { this.dateReturned = dateReturned; }
 }
 
-// ------------------- LibrarySystem.java -------------------
+// Library
 class LibrarySystem {
     private ArrayList<User> users;
     private ArrayList<Book> books;
